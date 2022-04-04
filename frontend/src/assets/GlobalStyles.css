@@ -1,0 +1,270 @@
+/*Colours are defined as global variables*/
+:root {
+    /*For buttons*/
+    --text-button-white:#FFFFFF;
+    --blue-primary: #026fc1;
+    --blue-mouse-over: #002844;
+    --text-button-cancel:#026fc1;
+    --error-button-mouse-over:#f29ea5;
+    --error-button-normal:#dc3545;
+    --success-button-mouse-over: #99ea9b;
+    --warning-button-mouse-over: #f8bc72;
+
+    --normal-font-size-button:15px;
+}
+
+/*Font Family configurations*/
+@font-face {
+    font-family: Montserrat-Medium;
+    src: url("fonts/Montserrat-Medium.ttf");
+    font-style: normal;
+}
+
+.v-application{
+    font-family: Montserrat-Medium,sans-serif;
+    font-size: 15px;
+}
+
+/*Font size configurations*/
+h1{
+    font-size: 30px;
+}
+h2{
+    font-size: 1.5em !important;
+}
+h4{
+    font-weight: normal;
+}
+/*Data table rows text*/
+td{
+    font-size: 1em !important;
+}
+/*Data table rows text*/
+th{
+
+}
+.v-label{
+    font-size: 1em;
+}
+/*Styles for some main menu headings such as "Future Comunica"*/
+.t1{
+    color: black;
+    font-size: 30px;
+}
+.t2{
+    font-size: 30px;
+    color: #026fc1;
+}
+
+.text-explora-mas{
+    font-size: 20px !important;
+}
+
+/*Style for "Explora Mas" buttons*/
+#explore span:hover{
+    color: #002844;
+}
+/*Style for text of cards in main menu*/
+.cards-text-main-page{
+    font-size: 1em;
+    text-align: justify;
+}
+
+/*Style for tex of the username in dashboard*/
+.text-username-main-page{
+    margin-left: 5px;
+    margin-right: 5px;
+    /*max-width: 200px;*/
+    /*text-overflow: ellipsis;*/
+    /*overflow: hidden;*/
+    /*white-space: pre;*/
+}
+
+.menu-items{
+    padding: 0 8px !important;
+}
+
+/*Style for normal button*/
+/*I have used the enabled state because in this case it is not affected by the default settings and gives a better result.*/
+/*The normal style is affected by default settings that have priority, among other things, here you can not select the
+background color, if you need to make changes that have no effect here, it is better to edit the style for the enabled
+status*/
+.v-application .primary{
+    color: var(--text-button-white) !important;
+    font-size: var(--normal-font-size-button);
+}
+.v-application .primary:hover{
+    color: var(--text-button-white) !important;
+    background: var(--blue-mouse-over) !important;
+    font-size: var(--normal-font-size-button);
+}
+
+/*Style for cancel button or anyone in transparent box*/
+/*I have used the enabled state because in this case it is not affected by the default settings and gives a better result.*/
+.v-application .secondary:enabled{
+    color: var(--text-button-cancel) !important;
+    border-color: var(--blue-primary) !important;
+    border-style: solid !important;
+    border-width: 1px 1px 1px 1px !important;
+    font-size: var(--normal-font-size-button);
+
+}
+.v-application .secondary:hover{
+    color: var(--text-button-white) !important;
+    background-color: var(--blue-mouse-over) !important;
+    font-size: var(--normal-font-size-button);
+}
+
+/*Style for delete button*/
+.v-application .error{
+    color: var(--text-button-white) !important;
+    font-size: var(--normal-font-size-button);
+}
+.v-application .error:hover{
+    color: var(--text-button-white) !important;
+    background: var(--error-button-mouse-over) !important;
+    font-size: var(--normal-font-size-button);
+}
+
+/*Style for success button*/
+.v-application .success{
+    color: var(--text-button-white) !important;
+    font-size: var(--normal-font-size-button);
+}
+.v-application .success:hover{
+    color: var(--text-button-white) !important;
+    background: var(--success-button-mouse-over) !important;
+    font-size: var(--normal-font-size-button);
+}
+
+/*Style for warning button*/
+.v-application .warning{
+    color: var(--text-button-white) !important;
+    font-size: var(--normal-font-size-button);
+}
+.v-application .warning:hover{
+    color: var(--text-button-white) !important;
+    background: var(--warning-button-mouse-over) !important;
+    font-size: var(--normal-font-size-button);
+}
+
+/*Styles for delete and leave confirmation messages*/
+#swal2-title {
+    font-family: Montserrat-Medium,sans-serif !important;
+    font-size: 24px !important;
+    font-weight: 400;
+}
+
+#swal2-content{
+    font-family: Montserrat-Medium,sans-serif !important;
+    font-size: 15px !important;
+}
+
+/*Style for confirm buttons in swals. This is the default style*/
+/*Style for confirm buttons in swals in red color version. Is necessary to specify in the call to the swal*/
+.swal-button-ok:enabled{
+    color: var(--text-button-white);
+    background: var(--blue-primary) !important;
+    font-size: var(--normal-font-size-button) !important;
+    font-family: Montserrat-Medium,sans-serif !important;
+}
+.swal-button-ok:hover{
+    color: var(--text-button-white);
+    background: var(--blue-mouse-over) !important;
+    font-size: var(--normal-font-size-button) !important;
+    font-family: Montserrat-Medium,sans-serif !important;
+
+}
+/*This is to prevent the button from highlighting if it is in the focus state.*/
+.swal-button-ok:focus{
+    box-shadow: none !important;
+}
+
+/*Style for cancel buttons in swals*/
+.swal-button-cancel:enabled{
+    color: var(--text-button-cancel) !important;
+    background-color: transparent !important;
+    border-color: var(--blue-primary) !important;
+    border-style: solid !important;
+    border-width: 1px 1px 1px 1px !important;
+    min-width: 8.6rem;
+    min-height: 2.45rem;
+    font-size: var(--normal-font-size-button) !important;
+    font-family: Montserrat-Medium,sans-serif !important;
+}
+
+.swal-button-cancel:hover{
+    color: var(--text-button-white) !important;
+    background-color: var(--blue-mouse-over) !important;
+    border-color: var(--blue-mouse-over) !important;
+    border-style: solid !important;
+    border-width: 1px 1px 1px 1px !important;
+    min-width: 8.6rem;
+    min-height: 2.45rem;
+    font-size: var(--normal-font-size-button)!important;
+    font-family: Montserrat-Medium,sans-serif !important;
+}
+.swal-button-cancel:focus{
+    box-shadow: none !important;
+    font-size: var(--normal-font-size-button);
+}
+
+/*Style for confirm buttons in swals in red color version. Is necessary to specify in the call to the swal*/
+.swal-button-accept:enabled{
+    color: var(--text-button-white) !important;
+    background: var(--error-button-normal) !important;
+    font-size: var(--normal-font-size-button) !important;
+    min-width: 8.6rem;
+    min-height: 2.45rem;
+    font-family: Montserrat-Medium,sans-serif !important;
+}
+.swal-button-accept:hover{
+    color: var(--text-button-white) !important;
+    background: var(--error-button-mouse-over) !important;
+    font-size: var(--normal-font-size-button) !important;
+    min-width: 8.6rem;
+    min-height: 2.45rem;
+    font-family: Montserrat-Medium,sans-serif !important;
+
+}
+.swal-button-accept:focus{
+    box-shadow: none !important;
+}
+
+/*Style for confirm buttons in swals in primary color version. Is necessary to specify in the call to the swal*/
+.swal-button-accept-primary:enabled{
+    color: var(--text-button-white) !important;
+    background: var(--blue-primary) !important;
+    font-size: var(--normal-font-size-button) !important;
+    min-width: 8.6rem;
+    min-height: 2.45rem;
+    font-family: Montserrat-Medium,sans-serif !important;
+}
+.swal-button-accept-primary:hover{
+    color: var(--text-button-white) !important;
+    background: var(--blue-mouse-over) !important;
+    font-size: var(--normal-font-size-button) !important;
+    min-width: 8.6rem;
+    min-height: 2.45rem;
+    font-family: Montserrat-Medium,sans-serif !important;
+
+}
+.swal-button-accept-primary:focus{
+    box-shadow: none !important;
+}
+
+.swal-text-area{
+    font-family: Montserrat-Medium,sans-serif;
+    font-size: 15px;
+}
+.swal-text-area:focus{
+    box-shadow: none !important;
+}
+
+/*Style for close button (blade) of FichajeOnline dialog*/
+.button-close-dialog{
+
+}
+.button-close-dialog:hover{
+    color: var(--blue-primary) !important;
+}
