@@ -21,7 +21,7 @@ Vue.use(VueHighlightJS);
 
 router.afterEach((to, from) => {
   Vue.nextTick(() => {
-    document.title = 'Landing Page'
+    document.title = 'Jawelin 2024'
   })
 })
 

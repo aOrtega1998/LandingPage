@@ -1,23 +1,20 @@
 <template>
-
   <v-app>
-    <div>
+    <div class="app-container">
       <NavBar></NavBar>
+      <main class="main-content">
+        <router-view></router-view>
+      </main>
     </div>
-   <main>
-     <router-view></router-view>
-   </main>
-    <Footer id="ftr"></Footer>
   </v-app>
 </template>
 
 <script>
-import Footer from '@/components/Footer'
 import NavBar from "@/components/NavBar";
 export default {
   name: 'App',
   components:{
-    Footer,
+    //Footer,
     NavBar
   },
    data: ()=> ({
@@ -26,9 +23,27 @@ export default {
 
 </script>
 <style>
+html, body, #app, .app-container {
+  height: 100%;
+  margin: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #ftr {
   width: 100%;
-  position: absolute;
+  position: relative; /* Cambié de absolute a relative */
   bottom: 0;
   left: 0;
 }
