@@ -1,6 +1,11 @@
 <template>
   <v-container>
     <v-row>
+      <v-col v-if="allTestsCompleted" cols="12">
+        <v-alert type="success" dismissible>
+          ¡Has completado todas las pruebas! ¡Felicidades!
+        </v-alert>
+      </v-col>
       <v-col v-for="test in filteredTests" :key="test.id" cols="12" md="4">
         <test-card :test="test" />
       </v-col>
@@ -22,16 +27,24 @@ export default {
         { id: 2, name: 'Prueba 2', description: 'Descripción de la prueba 2' },
         { id: 3, name: 'Prueba 3', description: 'Descripción de la prueba 3' },
         { id: 4, name: 'Prueba 4', description: 'Descripción de la prueba 4' },
+        /*
         { id: 5, name: 'Prueba 5', description: 'Descripción de la prueba 5' },
         { id: 6, name: 'Prueba 6', description: 'Descripción de la prueba 6' },
         { id: 7, name: 'Prueba 7', description: 'Descripción de la prueba 7' },
         { id: 8, name: 'Prueba 8', description: 'Descripción de la prueba 8' },
         { id: 9, name: 'Prueba 9', description: 'Descripción de la prueba 9' },
         { id: 10, name: 'Prueba 10', description: 'Descripción de la prueba 10' }
+         */
       ],
       currentUser: null,  // Guardará los datos del usuario actual
-      filteredTests: []   // Pruebas filtradas para el usuario
+      filteredTests: [],   // Pruebas filtradas para el usuario
     };
+  },
+  computed: {
+    // Computed property para verificar si todas las pruebas han sido completadas
+    allTestsCompleted() {
+      return this.currentUser && this.currentUser.completedTests.length === this.tests.length;
+    }
   },
   mounted() {
     this.loadUser();
@@ -49,10 +62,20 @@ export default {
     },
     // Filtrar la prueba correspondiente al usuario actual
     filterTestsForUser() {
-      if (this.currentUser && this.currentUser.assignedTest) {
-        this.filteredTests = this.tests.filter(test => test.name === this.currentUser.assignedTest);
+      if (this.currentUser) {
+        // Solo mostrar la prueba asignada que no haya sido completada
+        this.filteredTests = this.tests.filter(test =>
+            test.name === this.currentUser.assignedTest &&
+            !this.currentUser.completedTests.includes(test.name)
+        );
       }
     }
   }
 }
 </script>
+
+<style scoped>
+.text-center {
+  text-align: center;
+}
+</style>
