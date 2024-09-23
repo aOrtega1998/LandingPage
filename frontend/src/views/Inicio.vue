@@ -49,8 +49,8 @@ export default {
     },
     // Filtrar la prueba correspondiente al usuario actual
     filterTestsForUser() {
-      if (this.currentUser && this.currentUser.nombrePrueba) {
-        this.filteredTests = this.tests.filter(test => test.name === this.currentUser.nombrePrueba);
+      if (this.currentUser && this.currentUser.assignedTest) {
+        this.filteredTests = this.tests.filter(test => test.name === this.currentUser.assignedTest);
       }
     }
   }

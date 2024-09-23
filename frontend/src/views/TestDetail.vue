@@ -93,7 +93,7 @@ export default {
         // Obtener las pruebas que ya están asignadas a otros usuarios
         const assignedTests = users
             .filter(u => u.userLogin !== currentUser) // Excluir al usuario actual
-            .map(u => u.nombrePrueba)
+            .map(u => u.assignedTest)
             .filter(Boolean);
 
         // Asignar la siguiente prueba que no haya completado el usuario y que no esté asignada a otro
@@ -103,10 +103,8 @@ export default {
         );
 
         if (nextTest) {
-          user.nombrePrueba = nextTest.name;  // Asigna la siguiente prueba disponible
           user.assignedTest = nextTest.name; // Almacena la prueba asignada
         } else {
-          user.nombrePrueba = null; // O alguna lógica para indicar que no hay más pruebas
           user.assignedTest = null; // Asegurarse de que no haya una prueba asignada
         }
 
