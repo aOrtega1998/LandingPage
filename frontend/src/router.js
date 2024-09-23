@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Login from "@/views/Login";
 import Inicio from "@/views/Inicio";
 import TestDetail from "@/views/TestDetail";
+import Admin from "@/views/Admin";
 
 Vue.use(Router);
 
@@ -17,7 +18,7 @@ export default new Router({
     },
     {
       path: '/inicio',
-      name: 'inicio',
+      name: 'Inicio',
       component: () => import("./views/Inicio"),
       meta: { requiresAuth: true }
     },
@@ -26,7 +27,13 @@ export default new Router({
       name: 'test-detail',
       component: () => import("./views/TestDetail"),
       meta: { requiresAuth: true }
-    }
+    },
+    {
+      path: '/admin',
+      name: 'Admin',
+      component: () => import("./views/Admin"),
+      meta: { requiresAuth: true }
+    },
 
 
   ]

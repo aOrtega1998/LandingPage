@@ -3,6 +3,7 @@ import Inicio from '../views/Inicio.vue'
 import TestDetail from "@/views/TestDetail";
 import Login from "@/views/Login";
 import Router from "vue-router";
+import Admin from "@/views/Admin";
 
 Vue.use(VueRouter)
 
@@ -18,6 +19,12 @@ const router = new Router({
       path: '/inicio',
       name: 'inicio',
       component: Inicio,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: Admin,
       meta: { requiresAuth: true }
     },
     {
