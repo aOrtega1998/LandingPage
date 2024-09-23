@@ -41,9 +41,9 @@ export default {
       if (!usuariosLocalStorage) {
         const usuariosIniciales = [
           { id: 1, userLogin: 'admin', contadorPruebas: 0, assignedTest: null, completedTests: [] },
-          { id: 2, userLogin: 'user1', contadorPruebas: 0, assignedTest: null, completedTests: [] },
-          { id: 3, userLogin: 'user2', contadorPruebas: 0, assignedTest: null, completedTests: [] },
-          { id: 4, userLogin: 'user3', contadorPruebas: 0, assignedTest: null, completedTests: [] }
+          { id: 2, userLogin: 'user1', contadorPruebas: 0, assignedTest: "Prueba 1", completedTests: [] },
+          { id: 3, userLogin: 'user2', contadorPruebas: 0, assignedTest: "Prueba 2", completedTests: [] },
+          { id: 4, userLogin: 'user3', contadorPruebas: 0, assignedTest: "Prueba 3", completedTests: [] }
         ];
         // Guardar los usuarios iniciales en localStorage
         localStorage.setItem('usuarios', JSON.stringify(usuariosIniciales));
