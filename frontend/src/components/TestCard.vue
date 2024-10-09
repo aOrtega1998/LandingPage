@@ -1,7 +1,7 @@
 <template>
   <v-card class="custom-card mx-auto my-4" @click="goToTestDetail" max-width="344">
     <v-img
-        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+        :src="test.imagen"
         height="200px"
     ></v-img>
     <v-card-title>{{ test.name }}</v-card-title>

@@ -24,7 +24,7 @@ export default {
     handleLogout() {
       // Elimina el nombre de usuario del almacenamiento local
       localStorage.removeItem('username');
-
+      localStorage.removeItem('sessionActive');
       // Redirige al usuario a la página de inicio de sesión
       this.$router.push('/');
     }

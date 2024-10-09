@@ -1,6 +1,6 @@
 module.exports = {
   transpileDependencies: [
-    'vuetify'
+    'vuetify','vuex-persist'
   ],
 
   devServer: {
@@ -11,9 +11,13 @@ module.exports = {
     disableHostCheck: true,
     proxy: {
       '/*': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8081',
         changeOrigin: true,
-        ws: true
+        ws: true,
+        onProxyReq: function (proxyReq) {
+          proxyReq.setHeader('X-Special-Proxy-Header', 'foobar');
+          // Aquí puedes eliminar cookies grandes u otros encabezados innecesarios si es el caso
+        }
       }
     }
   },

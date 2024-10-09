@@ -1,11 +1,16 @@
 <template>
   <v-app>
-    <div class="app-container">
-      <NavBar></NavBar>
-      <main class="main-content">
-        <router-view></router-view>
-      </main>
-    </div>
+    <v-img
+        :src="require('@/assets/fondo.png')"
+        class="background-image"
+    >
+      <div class="app-container">
+        <NavBar />
+        <main class="main-content">
+          <router-view />
+        </main>
+      </div>
+    </v-img>
   </v-app>
 </template>
 
@@ -23,12 +28,8 @@ export default {
 
 </script>
 <style>
-html, body, #app, .app-container {
-  height: 100%;
-  margin: 0;
-}
-
 .app-container {
+
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -41,10 +42,4 @@ html, body, #app, .app-container {
   justify-content: center;
 }
 
-#ftr {
-  width: 100%;
-  position: relative; /* Cambié de absolute a relative */
-  bottom: 0;
-  left: 0;
-}
 </style>

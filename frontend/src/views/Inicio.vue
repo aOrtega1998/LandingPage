@@ -6,8 +6,25 @@
           ¡Has completado todas las pruebas! ¡Felicidades!
         </v-alert>
       </v-col>
-      <v-col v-for="test in filteredTests" :key="test.id" cols="12" md="4">
-        <test-card :test="test" />
+      <v-col v-if="noAvailableTests" cols="12">
+        <v-alert type="warning" dismissible>
+          No hay pruebas disponibles en este momento. ¡Por favor, inténtalo más tarde!
+        </v-alert>
+      </v-col>
+      <v-col v-if="currentTest" cols="12" md="4">
+        <test-card :test="currentTest" />
+      </v-col>
+      <v-col cols="12">
+      <v-expansion-panels>
+        <v-expansion-panel v-for="audio in currentUser.unlockedAudios" :key="audio.src">
+          <v-expansion-panel-header>
+            {{ audio.name }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <audio :src="audio.src" controls></audio>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
       </v-col>
     </v-row>
   </v-container>
@@ -23,35 +40,40 @@ export default {
   data() {
     return {
       tests: [
-        { id: 1, name: 'Prueba 1', description: 'Descripción de la prueba 1' },
-        { id: 2, name: 'Prueba 2', description: 'Descripción de la prueba 2' },
-        { id: 3, name: 'Prueba 3', description: 'Descripción de la prueba 3' },
-        { id: 4, name: 'Prueba 4', description: 'Descripción de la prueba 4' },
-        /*
-        { id: 5, name: 'Prueba 5', description: 'Descripción de la prueba 5' },
-        { id: 6, name: 'Prueba 6', description: 'Descripción de la prueba 6' },
-        { id: 7, name: 'Prueba 7', description: 'Descripción de la prueba 7' },
-        { id: 8, name: 'Prueba 8', description: 'Descripción de la prueba 8' },
-        { id: 9, name: 'Prueba 9', description: 'Descripción de la prueba 9' },
-        { id: 10, name: 'Prueba 10', description: 'Descripción de la prueba 10' }
-         */
+        { id: 1, name: 'CIRCO DEL SOL', description: 'Descripción de la prueba 1', imagen: require('@/assets/imagenPruebas/p1_circo-del-sol.png') },
+        { id: 2, name: 'ESCAPISMO', description: 'Descripción de la prueba 2', imagen:require('@/assets/imagenPruebas/p2_escapismo.jpg') },
+        { id: 3, name: 'HOMBRE BALA', description: 'Descripción de la prueba 3', imagen:require('@/assets/imagenPruebas/p3_hombre-bala.jpg') },
+        { id: 4, name: 'ADIVINACIÓN', description: 'Descripción de la prueba 4', imagen:require('@/assets/imagenPruebas/p4_adivinacion.jpg') },
+        { id: 5, name: 'TELEQUINESIS', description: 'Descripción de la prueba 5', imagen:require('@/assets/imagenPruebas/p5_telequinesia.png') },
+        { id: 6, name: 'TRAPECISTAS', description: 'Descripción de la prueba 6', imagen:require('@/assets/imagenPruebas/p6_trapecistas.jpg') },
+        { id: 7, name: 'ESPEJISMOS', description: 'Descripción de la prueba 7', imagen:require('@/assets/imagenPruebas/p7_espejismos.jpg') },
+        { id: 8, name: 'ILUSIONISMO', description: 'Os veréis descubriendo un mensaje oculto con un artilugio que os puede dar el domador del circo', imagen:require('@/assets/imagenPruebas/p8_ilusionismo.jpg') },
+        { id: 9, name: 'EQUILIBRISMO', description: 'Descripción de la prueba 9', imagen:require('@/assets/imagenPruebas/p9_equilibrismo.jpg') },
+        { id: 10, name: 'MALABARISMO', description: 'Descripción de la prueba 10', imagen:require('@/assets/imagenPruebas/p10_malabarismo.jpg') }
       ],
-      currentUser: null,  // Guardará los datos del usuario actual
-      filteredTests: [],   // Pruebas filtradas para el usuario
+      currentUser: null,
+      currentTest: null,
     };
   },
   computed: {
-    // Computed property para verificar si todas las pruebas han sido completadas
     allTestsCompleted() {
       return this.currentUser && this.currentUser.completedTests.length === this.tests.length;
+    },
+    noAvailableTests() {
+      return !this.currentTest && !this.allTestsCompleted;
     }
   },
   mounted() {
-    this.loadUser();
-    this.filterTestsForUser();
+    const sessionActive = localStorage.getItem('sessionActive');
+    if (sessionActive) {
+      // Lógica para cargar la información del usuario y redirigirlo
+      this.loadUser();
+      this.assignTestToUser();
+    } else {
+      this.$router.push('/'); // Redirige al usuario a la página de login
+    }
   },
   methods: {
-    // Cargar datos del usuario desde localStorage
     loadUser() {
       const storedUser = localStorage.getItem('username');
       const storedUsers = JSON.parse(localStorage.getItem('usuarios'));
@@ -60,16 +82,40 @@ export default {
         this.currentUser = storedUsers.find(user => user.userLogin === storedUser);
       }
     },
-    // Filtrar la prueba correspondiente al usuario actual
-    filterTestsForUser() {
+    assignTestToUser() {
       if (this.currentUser) {
-        // Solo mostrar la prueba asignada que no haya sido completada
-        this.filteredTests = this.tests.filter(test =>
-            test.name === this.currentUser.assignedTest &&
-            !this.currentUser.completedTests.includes(test.name)
-        );
+        const occupiedTests = this.getOccupiedTests();
+
+        // Verificar si la prueba asignada está ocupada
+        if (this.currentUser.assignedTest && !this.currentUser.completedTests.includes(this.currentUser.assignedTest) &&
+            !occupiedTests.includes(this.currentUser.assignedTest)) {
+          this.currentTest = this.tests.find(test => test.name === this.currentUser.assignedTest);
+        } else {
+          // Buscar la siguiente prueba que no haya completado y no esté ocupada
+          this.currentTest = this.tests.find(test =>
+              !occupiedTests.includes(test.name) &&
+              !this.currentUser.completedTests.includes(test.name)
+          );
+          console.log(this.currentTest)
+          // Si hay una prueba disponible, asignarla al usuario
+          if (this.currentTest) {
+            this.currentUser.assignedTest = this.currentTest.name;
+            this.updateUserInStorage(this.currentUser); // Actualiza el usuario en localStorage
+          }
+        }
       }
-    }
+    },
+    getOccupiedTests() {
+      const users = JSON.parse(localStorage.getItem('usuarios'));
+      return users
+          .filter(user => user.userLogin !== this.currentUser.userLogin && user.assignedTest)
+          .map(user => user.assignedTest);
+    },
+    updateUserInStorage(user) {
+      const users = JSON.parse(localStorage.getItem('usuarios'));
+      const updatedUsers = users.map(u => (u.userLogin === user.userLogin ? user : u));
+      localStorage.setItem('usuarios', JSON.stringify(updatedUsers));
+    },
   }
 }
 </script>

@@ -55,6 +55,9 @@ export default {
     // Método para manejar el inicio de sesión
     handleLogin() {
       if (this.username) {
+        localStorage.setItem('username', this.username);
+        // Almacena el estado de sesión como 'true'
+        localStorage.setItem('sessionActive', 'true');
         // Verifica si el username existe en la lista de usuarios
         if(this.username === "admin"){
           this.$router.push('/admin');
