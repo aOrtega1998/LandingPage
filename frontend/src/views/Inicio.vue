@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-row>
+  <v-container >
+    <v-row class="d-flex align-center justify-center">
       <v-col v-if="allTestsCompleted" cols="12">
         <v-alert type="success" dismissible>
           ¡Has completado todas las pruebas! ¡Felicidades!
