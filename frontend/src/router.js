@@ -20,19 +20,16 @@ export default new Router({
       path: '/inicio',
       name: 'Inicio',
       component: () => import("./views/Inicio"),
-      meta: { requiresAuth: true }
     },
     {
       path: '/test/:id',
       name: 'test-detail',
       component: () => import("./views/TestDetail"),
-      meta: { requiresAuth: true }
     },
     {
       path: '/admin',
       name: 'Admin',
       component: () => import("./views/Admin"),
-      meta: { requiresAuth: true }
     },
 
 

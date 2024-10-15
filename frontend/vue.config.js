@@ -1,7 +1,5 @@
 module.exports = {
-  transpileDependencies: [
-    'vuetify','vuex-persist'
-  ],
+  transpileDependencies: ['vuetify', 'vuex-persist'],
 
   devServer: {
     https: false,
@@ -9,23 +7,10 @@ module.exports = {
     host: '0.0.0.0',
     port: 8081,
     disableHostCheck: true,
-    proxy: {
-      '/*': {
-        target: 'http://localhost:8081',
-        changeOrigin: true,
-        ws: true,
-        onProxyReq: function (proxyReq) {
-          proxyReq.setHeader('X-Special-Proxy-Header', 'foobar');
-          // Aquí puedes eliminar cookies grandes u otros encabezados innecesarios si es el caso
-        }
-      }
-    }
+    historyApiFallback: true,  // Agrega esta línea
   },
 
-  // Change build paths to make them Maven compatible
-  // see https://cli.vuejs.org/config/
   outputDir: 'target/dist',
-
   assetsDir: 'static',
 
   pluginOptions: {
