@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint",
-    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales 'src/lang/**/*.json'"
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
+    "test:e2e": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service test:e2e",
+    "lint": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service lint",
+    "i18n:report": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales 'src/lang/**/*.json'"
   },
   "dependencies": {
     "@timbouc/vuetify-country-region-input": "^0.1.2",
