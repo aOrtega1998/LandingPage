@@ -74,7 +74,7 @@ export default {
         { id: 3, name: 'HOMBRE BALA', description: 'Descripción de la prueba 3', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: '3333' },
         { id: 4, name: 'ADIVINACIÓN', description: 'Descripción de la prueba 4', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
         { id: 5, name: 'TELEQUINESIS', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
-        { id: 6, name: 'nTELEQUINESIS', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
+        { id: 6, name: 'TRAPECISTAS', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
         { id: 7, name: 'ESPEJISMOS', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
         { id: 8, name: 'ILUSIONISMO', description: 'Tenéis que traer una cinta de tela de las que hay en la Morala, y llevársela al domador, que está dando vueltas por el pueblo con una vela. Él os dará lo que necesitáis.', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
         { id: 9, name: 'EQUILIBRISMO', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
