@@ -31,27 +31,22 @@
 </template>
 
 <script>
+import {getData} from "@/services/firebaseService";
+
 export default {
   data() {
     return {
-      username: '',  // Nombre de usuario ingresado
+      username: '', // Nombre de usuario ingresado
+      users:[],
       usuarios: []  // Lista de usuarios desde localStorage
     };
   },
-  mounted() {
-    // Cargar los usuarios desde localStorage al montar el componente
-    this.loadUsuarios();
+ async mounted() {
+    // Obtener los usuarios
+    this.users = await getData("usuarios")
   },
   methods: {
-    // Método para cargar los usuarios desde localStorage
-    loadUsuarios() {
-      const usuariosLocalStorage = localStorage.getItem('usuarios');
-      if (usuariosLocalStorage) {
-        this.usuarios = JSON.parse(usuariosLocalStorage);
-      } else {
-        this.usuarios = [];
-      }
-    },
+
     // Método para manejar el inicio de sesión
     handleLogin() {
       if (this.username) {
@@ -62,7 +57,7 @@ export default {
         if(this.username === "admin"){
           this.$router.push('/admin');
         }else{
-          const usuarioEncontrado = this.usuarios.find(user => user.userLogin === this.username);
+          const usuarioEncontrado = this.users.find(user => user.userLogin === this.username);
 
           if (usuarioEncontrado) {
             // Almacena el nombre de usuario en localStorage

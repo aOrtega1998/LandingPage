@@ -14,14 +14,14 @@
       <v-col v-if="currentTest" cols="12" md="4">
         <test-card :test="currentTest" />
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" v-if="currentUser.unlockedAudios != null">
       <v-expansion-panels>
-        <v-expansion-panel v-for="audio in currentUser.unlockedAudios" :key="audio.src">
+        <v-expansion-panel v-for="audio in currentUser.unlockedAudios" :key="audio.url">
           <v-expansion-panel-header>
             {{ audio.name }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <audio :src="audio.src" controls></audio>
+            <audio :src="require(`@/assets/audios/${audio.url}`)" controls></audio>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -32,6 +32,7 @@
 
 <script>
 import TestCard from '@/components/TestCard.vue';
+import {getData, updateData} from "@/services/firebaseService";
 
 export default {
   components: {
@@ -39,20 +40,10 @@ export default {
   },
   data() {
     return {
-      tests: [
-        { id: 1, name: 'CIRCO DEL SOL', description: 'Descripción de la prueba 1', imagen: require('@/assets/imagenPruebas/p1_circo-del-sol.png') },
-        { id: 2, name: 'ESCAPISMO', description: 'Descripción de la prueba 2', imagen:require('@/assets/imagenPruebas/p2_escapismo.jpg') },
-        { id: 3, name: 'HOMBRE BALA', description: 'Descripción de la prueba 3', imagen:require('@/assets/imagenPruebas/p3_hombre-bala.jpg') },
-        { id: 4, name: 'ADIVINACIÓN', description: 'Descripción de la prueba 4', imagen:require('@/assets/imagenPruebas/p4_adivinacion.jpg') },
-        { id: 5, name: 'TELEQUINESIS', description: 'Descripción de la prueba 5', imagen:require('@/assets/imagenPruebas/p5_telequinesia.png') },
-        { id: 6, name: 'TRAPECISTAS', description: 'Descripción de la prueba 6', imagen:require('@/assets/imagenPruebas/p6_trapecistas.jpg') },
-        { id: 7, name: 'ESPEJISMOS', description: 'Descripción de la prueba 7', imagen:require('@/assets/imagenPruebas/p7_espejismos.jpg') },
-        { id: 8, name: 'ILUSIONISMO', description: 'Os veréis descubriendo un mensaje oculto con un artilugio que os puede dar el domador del circo', imagen:require('@/assets/imagenPruebas/p8_ilusionismo.jpg') },
-        { id: 9, name: 'EQUILIBRISMO', description: 'Descripción de la prueba 9', imagen:require('@/assets/imagenPruebas/p9_equilibrismo.jpg') },
-        { id: 10, name: 'MALABARISMO', description: 'Descripción de la prueba 10', imagen:require('@/assets/imagenPruebas/p10_malabarismo.jpg') }
-      ],
+      tests:[],
       currentUser: null,
       currentTest: null,
+      users:[]
     };
   },
   computed: {
@@ -63,23 +54,24 @@ export default {
       return !this.currentTest && !this.allTestsCompleted;
     }
   },
-  mounted() {
+  async mounted() {
+    this.tests = await getData("pruebas")
+    this.users = await getData("usuarios")
+    console.log(this.tests)
     const sessionActive = localStorage.getItem('sessionActive');
     if (sessionActive) {
       // Lógica para cargar la información del usuario y redirigirlo
       this.loadUser();
       this.assignTestToUser();
     } else {
-      this.$router.push('/'); // Redirige al usuario a la página de login
+      await this.$router.push('/'); // Redirige al usuario a la página de login
     }
   },
   methods: {
-    loadUser() {
+    async loadUser() {
       const storedUser = localStorage.getItem('username');
-      const storedUsers = JSON.parse(localStorage.getItem('usuarios'));
-
-      if (storedUser && storedUsers) {
-        this.currentUser = storedUsers.find(user => user.userLogin === storedUser);
+      if (storedUser && this.users) {
+        this.currentUser = this.users.find(user => user.userLogin === storedUser);
       }
     },
     assignTestToUser() {
@@ -106,14 +98,14 @@ export default {
       }
     },
     getOccupiedTests() {
-      const users = JSON.parse(localStorage.getItem('usuarios'));
-      return users
+     // const users = JSON.parse(localStorage.getItem('usuarios'));
+      return this.users
           .filter(user => user.userLogin !== this.currentUser.userLogin && user.assignedTest)
           .map(user => user.assignedTest);
     },
-    updateUserInStorage(user) {
-      const users = JSON.parse(localStorage.getItem('usuarios'));
-      const updatedUsers = users.map(u => (u.userLogin === user.userLogin ? user : u));
+   async updateUserInStorage(user) {
+      //const updatedUsers = this.users.map(u => (u.userLogin === user.userLogin ? user : u));
+      await updateData("usuarios",user.id,user)
       localStorage.setItem('usuarios', JSON.stringify(updatedUsers));
     },
   }

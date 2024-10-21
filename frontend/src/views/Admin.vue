@@ -3,7 +3,7 @@
     <h1 class="text-center">Administración de Usuarios</h1>
     <v-data-table
         :headers="headers"
-        :items="usuarios"
+        :items="users"
         item-key="userLogin"
         class="elevation-1"
     >
@@ -15,10 +15,12 @@
 </template>
 
 <script>
+import { getData } from '@/services/firebaseService';
 export default {
   data() {
     return {
       usuarios: [],
+      users:[],
       headers: [
         { text: 'Login del Usuario', value: 'userLogin' },
         { text: 'Contador de Pruebas', value: 'contadorPruebas' },
@@ -27,16 +29,20 @@ export default {
       ],
     };
   },
-  mounted() {
+  async mounted() {
     // Crear los usuarios directamente en localStorage
-    this.crearUsuariosIniciales();
+    //this.crearUsuariosIniciales();
+    this.users = await getData("usuarios")
+    console.log(this.users)
     // Cargar los usuarios de localStorage para mostrarlos en la tabla
-    this.loadUsuarios();
+    //this.loadUsuarios();
   },
   methods: {
     // Crear usuarios iniciales en localStorage
+
     crearUsuariosIniciales() {
       // Verificar si ya existen usuarios en localStorage para evitar sobrescribir
+
       const usuariosLocalStorage = localStorage.getItem('usuarios');
       if (!usuariosLocalStorage) {
         const usuariosIniciales = [

@@ -56,43 +56,35 @@
 </template>
 
 <script>
+import {getData, updateData} from "@/services/firebaseService";
+
 export default {
   data() {
     return {
       test: {},
+      users:[],
       inputCode1: '',  // Código introducido por el usuario para la primera etapa
       inputCode2: '',  // Código introducido por el usuario para la segunda etapa
       code1Verified: false,  // Si el primer código ha sido verificado correctamente
       code2Verified: false,  // Si el segundo código ha sido verificado correctamente
       code1Error: false,  // Para mostrar un mensaje de error si el primer código es incorrecto
       code2Error: false,  // Para mostrar un mensaje de error si el segundo código es incorrecto
-      audioSrc: '',  // Fuente del archivo de audio
-      audioFinished: false,  // Para saber si el audio ha terminado de reproducirse
-      tests: [
-        { id: 1, name: 'CIRCO DEL SOL', description: 'Descripción de la prueba 1', audio: require('@/assets/audios/prueba1.mp3'), code1: '1111',code2: null },
-        { id: 2, name: 'ESCAPISMO', description: 'Descripción de la prueba 2', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222' ,code2: null},
-        { id: 3, name: 'HOMBRE BALA', description: 'Descripción de la prueba 3', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: '3333' },
-        { id: 4, name: 'ADIVINACIÓN', description: 'Descripción de la prueba 4', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
-        { id: 5, name: 'TELEQUINESIS', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
-        { id: 6, name: 'TRAPECISTAS', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
-        { id: 7, name: 'ESPEJISMOS', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
-        { id: 8, name: 'ILUSIONISMO', description: 'Tenéis que traer una cinta de tela de las que hay en la Morala, y llevársela al domador, que está dando vueltas por el pueblo con una vela. Él os dará lo que necesitáis.', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
-        { id: 9, name: 'EQUILIBRISMO', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
-        { id: 10, name:'MALABARISMO', description: 'Descripción de la prueba 5', audio: require('@/assets/audios/prueba2.mp3'), code1: '2222',code2: null },
-      ]
+      audioSrc: null,  // Fuente del archivo de audio
+      tests:[],
+      audios:[],
     };
   },
-  created() {
+  async created() {
     const testId = parseInt(this.$route.params.id);
+    this.tests= await getData("pruebas")
+    this.audios= await getData("audios")
+    this.users = await getData("usuarios")
     // Encontrar la prueba con el id correspondiente
     this.test = this.tests.find(t => t.id === testId);
-    this.audioSrc = this.test.audio;  // Asigna el audio correspondiente a la prueba
+    //this.audioSrc = this.test.audio;  // Asigna el audio correspondiente a la prueba
   },
   computed: {
     isAudioUnlocked() {
-      // El audio se desbloquea si:
-      // - En la prueba 3: ambos códigos son correctos
-      // - En las demás pruebas: solo el primer código es necesario
       return this.test.id === 3
           ? this.code1Verified && this.code2Verified
           : this.code1Verified;
@@ -103,6 +95,7 @@ export default {
       if (this.inputCode1 === this.test.code1) {
         this.code1Verified = true;
         this.code1Error = false;
+        this.updateAudioSource();
       } else {
         this.code1Error = true;
       }
@@ -111,15 +104,42 @@ export default {
       if (this.inputCode2 === this.test.code2) {
         this.code2Verified = true;
         this.code2Error = false;
-        this.audioFinished = true;  // Permitir finalizar la prueba
+        this.updateAudioSource();
       } else {
         this.code2Error = true;
       }
     },
-    finishTest() {
-      let users = JSON.parse(localStorage.getItem('usuarios'));
+    updateAudioSource() {
+      if (this.isAudioUnlocked) {
+        const currentUser = localStorage.getItem('username');
+        const user = this.users.find(u => u.userLogin === currentUser);
+
+        if (!user) {
+          console.error("Usuario no encontrado");
+          return;
+        }
+
+        let audio;
+        if (user.unlockedAudios.length === 0) {
+          // Si no hay audios desbloqueados, usar el audio con ID 1
+          audio = this.audios.find(a => a.id === 1);
+        } else {
+          // Obtener el siguiente audio según el contador de pruebas completadas
+          const completedCount = user.contadorPruebas;
+          audio = this.audios[completedCount - 1];
+        }
+
+        if (audio) {
+          this.audioSrc = require(`@/assets/audios/${audio.url}`);
+          console.log("Audio seleccionado:", audio);
+        } else {
+          console.error("No se encontró el audio correspondiente.");
+        }
+      }
+    },
+   async finishTest() {
       const currentUser = localStorage.getItem('username');
-      const user = users.find(u => u.userLogin === currentUser);
+      const user = this.users.find(u => u.userLogin === currentUser);
 
       if (user) {
         // Actualizar el contador de pruebas completadas
@@ -129,12 +149,11 @@ export default {
         if (!user.completedTests) {
           user.completedTests = [];
         }
-
         // Agregar la prueba actual a las completadas
         user.completedTests.push(this.test.name);
-        this.unlockAudioForTest(this.test, user)
+        this.unlockAudioForTest(user)
         // Obtener las pruebas que ya están asignadas a otros usuarios
-        const assignedTests = users
+        const assignedTests = this.users
             .filter(u => u.userLogin !== currentUser) // Excluir al usuario actual
             .map(u => u.assignedTest)
             .filter(Boolean);
@@ -150,16 +169,19 @@ export default {
         } else {
           user.assignedTest = null; // Asegurarse de que no haya una prueba asignada
         }
-
+        console.log(user)
+        await updateData("usuarios",user.id,user)
+        console.log(user)
         // Actualizar el usuario en localStorage
-        localStorage.setItem('usuarios', JSON.stringify(users));
+        //localStorage.setItem('usuarios', JSON.stringify(users));
 
         // Volver a la vista de inicio
-        this.$router.push('/inicio');
+        await this.$router.push('/inicio');
       }
     },
-    unlockAudioForTest(test, user) {
+    unlockAudioForTest(user) {
       // Aquí defines qué audio se desbloquea para cada prueba completada
+
       const audioToUnlock = [
         { name: 'Audio 1', src: require('@/assets/audios/prueba1.mp3') },
         { name: 'Audio 2', src: require('@/assets/audios/prueba2.mp3') },
@@ -175,9 +197,11 @@ export default {
 
       // Agrega más audios según sea necesario
       const completedCount = user.contadorPruebas; // Este es el número de pruebas completadas
-      if (audioToUnlock[completedCount - 1]) { // Asegúrate de que el índice sea válido
-        const audio = audioToUnlock[completedCount - 1]; // Obtener el siguiente audio
-        if (!user.unlockedAudios.some(unlocked => unlocked.name === audio.name)) { // Verificar si ya está desbloqueado
+      console.log(completedCount)
+      if (this.audios[completedCount - 1]) { // Asegúrate de que el índice sea válido
+        const audio = this.audios[completedCount - 1]; // Obtener el siguiente audio
+        console.log(audio)
+        if (!user.unlockedAudios.some(unlocked => unlocked.id === audio.id)) { // Verificar si ya está desbloqueado
           user.unlockedAudios.push(audio); // Agregar solo si no está desbloqueado
         }
       }
