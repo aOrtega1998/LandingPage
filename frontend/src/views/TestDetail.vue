@@ -1,10 +1,18 @@
 <template>
   <v-container>
-    <v-card>
+    <v-card
+        class="mx-auto"
+        max-width="500px"
+    >
       <v-card-title>{{ test.name }}</v-card-title>
       <v-card-text>
         <p>{{ test.description }}</p>
-
+        <v-img
+            :src="require(`@/assets/imagenesMapas/${test.mapa}`)"
+            width="480px"
+            height="270px"
+            contain
+        ></v-img>
         <!-- Campo para ingresar el primer código -->
         <v-text-field
             v-model="inputCode1"
@@ -43,14 +51,15 @@
         <!-- Reproductor de audio si el código es correcto -->
         <audio v-if="isAudioUnlocked" :src="audioSrc" controls autoplay></audio>
       </v-card-text>
+      <!-- Botón para finalizar la prueba una vez se escuche el audio -->
+      <v-btn
+          v-if="isAudioUnlocked"
+          color="success"
+          @click="finishTest"
+      >Finalizar Prueba</v-btn>
     </v-card>
 
-    <!-- Botón para finalizar la prueba una vez se escuche el audio -->
-    <v-btn
-        v-if="isAudioUnlocked"
-        color="success"
-        @click="finishTest"
-    >Finalizar Prueba</v-btn>
+
 
   </v-container>
 </template>

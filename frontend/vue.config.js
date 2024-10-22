@@ -10,7 +10,7 @@ module.exports = {
     historyApiFallback: true,  // Agrega esta línea
   },
 
-  outputDir: 'target/dist',
+  outputDir: 'dist',
   assetsDir: 'static',
 
   pluginOptions: {
