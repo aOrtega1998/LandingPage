@@ -1,10 +1,11 @@
 <template>
   <v-container>
     <v-card
-        class="mx-auto"
+        class="mx-auto my-4 elevation-2"
         max-width="500px"
+        tile
     >
-      <v-card-title>{{ test.name }}</v-card-title>
+      <v-card-title class="headline">{{ test.name }}</v-card-title>
       <v-card-text>
         <p>{{ test.description }}</p>
         <v-img
@@ -12,24 +13,29 @@
             width="480px"
             height="270px"
             contain
+            class="rounded-lg mb-3"
         ></v-img>
+
         <!-- Campo para ingresar el primer código -->
         <v-text-field
             v-model="inputCode1"
             label="Introduce el primer código"
             :disabled="code1Verified"
             required
+            clearable
         ></v-text-field>
+
         <v-btn
             @click="verifyCode1"
             color="primary"
             v-if="!code1Verified"
+            class="mb-2"
         >
           Verificar Primer Código
         </v-btn>
 
-        <!-- Mensaje de error si el primer código es incorrecto -->
-        <p v-if="code1Error" style="color: red;">Código incorrecto. Inténtalo de nuevo.</p>
+        <p v-if="code1Error" class="error-text">Código incorrecto. Inténtalo de nuevo.</p>
+
         <!-- Campo para ingresar el segundo código -->
         <v-text-field
             v-if="test.id === 3 && code1Verified"
@@ -37,30 +43,34 @@
             label="Introduce el segundo código"
             :disabled="code2Verified"
             required
+            clearable
         ></v-text-field>
+
         <v-btn
             v-if="test.id === 3 && code1Verified && !code2Verified"
             @click="verifyCode2"
             color="primary"
+            class="mb-2"
         >
           Verificar Segundo Código
         </v-btn>
-        <!-- Mensaje de error para el segundo código -->
-        <p v-if="code2Error" style="color: red;">Segundo código incorrecto. Inténtalo de nuevo.</p>
+
+        <p v-if="code2Error" class="error-text">Segundo código incorrecto. Inténtalo de nuevo.</p>
 
         <!-- Reproductor de audio si el código es correcto -->
         <audio v-if="isAudioUnlocked" :src="audioSrc" controls autoplay></audio>
       </v-card-text>
-      <!-- Botón para finalizar la prueba una vez se escuche el audio -->
-      <v-btn
-          v-if="isAudioUnlocked"
-          color="success"
-          @click="finishTest"
-      >Finalizar Prueba</v-btn>
+
+      <v-card-actions>
+        <v-btn
+            v-if="isAudioUnlocked"
+            color="success"
+            @click="finishTest"
+        >
+          Finalizar Prueba
+        </v-btn>
+      </v-card-actions>
     </v-card>
-
-
-
   </v-container>
 </template>
 
@@ -219,3 +229,9 @@ export default {
   }
 };
 </script>
+<style scoped>
+.error-text {
+  color: red;
+  margin: 8px 0;
+}
+</style>

@@ -8,19 +8,24 @@
         class="pa-4"
         max-width="400"
         tile
+        style="background-color: rgba(255, 255, 255, 0.9);"
     >
-      <v-card-title class="headline">Iniciar Sesión</v-card-title>
+      <v-card-title class="headline" style="font-family: 'Roboto', sans-serif; font-weight: bold;">Iniciar sesión</v-card-title>
       <v-form @submit.prevent="handleLogin">
         <v-text-field
             v-model="username"
             label="Nombre de Usuario"
             required
+            prepend-inner-icon="mdi-account"
         ></v-text-field>
         <v-card-actions>
           <v-btn
               type="submit"
               color="primary"
               block
+              style="transition: background-color 0.3s;"
+              @mouseover="'#0056b3'"
+              @mouseleave="'#1976d2'"
           >
             Iniciar Sesión
           </v-btn>
@@ -86,5 +91,9 @@ export default {
 /* Asegúrate de que el contenedor ocupe toda la altura y esté centrado */
 .v-container {
   height: 100vh; /* Hace que el contenedor ocupe toda la altura de la ventana */
+}
+.v-card {
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
 }
 </style>

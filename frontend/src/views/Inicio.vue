@@ -3,11 +3,13 @@
     <v-row class="d-flex align-center justify-center">
       <v-col v-if="allTestsCompleted" cols="12">
         <v-alert type="success" dismissible>
+          <v-icon left>mdi-trophy</v-icon>
           ¡Has completado todas las pruebas! ¡Felicidades!
         </v-alert>
       </v-col>
       <v-col v-if="noAvailableTests" cols="12">
         <v-alert type="warning" dismissible>
+          <v-icon left>mdi-alert-circle</v-icon>
           No hay pruebas disponibles en este momento. ¡Por favor, inténtalo más tarde!
         </v-alert>
       </v-col>
@@ -15,16 +17,29 @@
         <test-card :test="currentTest" />
       </v-col>
       <v-col cols="12" v-if="currentUser.unlockedAudios != null">
-      <v-expansion-panels>
-        <v-expansion-panel v-for="audio in currentUser.unlockedAudios" :key="audio.url">
-          <v-expansion-panel-header>
-            {{ audio.name }}
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <audio :src="require(`@/assets/audios/${audio.url}`)" controls></audio>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+        <v-row class="mt-4" justify="center">
+          <v-col cols="12" md="6">
+            <v-expansion-panels multiple>
+              <v-expansion-panel
+                  v-for="audio in currentUser.unlockedAudios"
+                  :key="audio.url"
+                  class="mb-2"
+                  style="max-width: 400px; width: 100%;"
+              >
+                <v-expansion-panel-header  class="d-flex align-start">
+                  <span class="ml-2">{{ audio.name }}</span>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <audio
+                      :src="require(`@/assets/audios/${audio.url}`)"
+                      controls
+                      class="w-100"
+                  ></audio>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -115,5 +130,8 @@ export default {
 <style scoped>
 .text-center {
   text-align: center;
+}
+.v-alert {
+  margin-bottom: 16px;
 }
 </style>
