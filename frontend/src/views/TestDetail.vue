@@ -9,13 +9,30 @@
       <v-card-text>
         <p>{{ test.description }}</p>
         <v-img
+            v-if="test.mapa"
             :src="require(`@/assets/imagenesMapas/${test.mapa}`)"
             width="480px"
             height="270px"
             contain
             class="rounded-lg mb-3"
         ></v-img>
-
+        <v-row justify="center" class="image-group">
+          <v-col
+              v-for="(image, index) in selectedImages"
+              :key="index"
+              cols="4"
+              class="d-flex justify-center"
+          >
+          <v-img
+              :src="require(`@/assets/imagenPruebas/prueba10/${image}`)"
+              width="120px"
+              height="120px"
+              contain
+              class="mx-2"
+              @click="openDialog(image)"
+          ></v-img>
+          </v-col>
+        </v-row>
         <!-- Campo para ingresar el primer código -->
         <v-text-field
             v-model="inputCode1"
@@ -71,6 +88,16 @@
         </v-btn>
       </v-card-actions>
     </v-card>
+    <!-- Dialogo para ampliar la imagen -->
+    <v-dialog v-model="dialog" max-width="600px">
+      <v-card>
+        <v-img v-if="selectedImage != null" :src="require(`@/assets/imagenPruebas/prueba10/${selectedImage}`)" width="100%" height="auto"></v-img>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="dialog = false">Cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -91,6 +118,9 @@ export default {
       audioSrc: null,  // Fuente del archivo de audio
       tests:[],
       audios:[],
+      selectedImages: [],
+      selectedImage: null,
+      dialog: false,
     };
   },
   async created() {
@@ -98,9 +128,9 @@ export default {
     this.tests= await getData("pruebas")
     this.audios= await getData("audios")
     this.users = await getData("usuarios")
+    this.selectedImages = this.getRandomImageSet();
     // Encontrar la prueba con el id correspondiente
     this.test = this.tests.find(t => t.id === testId);
-    //this.audioSrc = this.test.audio;  // Asigna el audio correspondiente a la prueba
   },
   computed: {
     isAudioUnlocked() {
@@ -110,6 +140,10 @@ export default {
     }
   },
   methods: {
+    openDialog(image) {
+      this.selectedImage = image;
+      this.dialog = true;
+    },
     verifyCode1() {
       if (this.inputCode1 === this.test.code1) {
         this.code1Verified = true;
@@ -199,20 +233,6 @@ export default {
       }
     },
     unlockAudioForTest(user) {
-      // Aquí defines qué audio se desbloquea para cada prueba completada
-
-      const audioToUnlock = [
-        { name: 'Audio 1', src: require('@/assets/audios/prueba1.mp3') },
-        { name: 'Audio 2', src: require('@/assets/audios/prueba2.mp3') },
-        { name: 'Audio 3', src: require('@/assets/audios/prueba2.mp3') },
-        { name: 'Audio 4', src: require('@/assets/audios/prueba2.mp3') },
-        { name: 'Audio 5', src: require('@/assets/audios/prueba2.mp3') },
-        { name: 'Audio 6', src: require('@/assets/audios/prueba2.mp3') },
-        { name: 'Audio 7', src: require('@/assets/audios/prueba2.mp3') },
-        { name: 'Audio 8', src: require('@/assets/audios/prueba2.mp3') },
-        { name: 'Audio 9', src: require('@/assets/audios/prueba2.mp3') },
-        { name: 'Audio 10', src: require('@/assets/audios/prueba2.mp3') },
-      ]
 
       // Agrega más audios según sea necesario
       const completedCount = user.contadorPruebas; // Este es el número de pruebas completadas
@@ -225,6 +245,18 @@ export default {
         }
       }
     },
+    getRandomImageSet() {
+      const imageGroups = [
+        ['grupo1/d1_1.jpg', 'grupo1/d1_2.jpg', 'grupo1/d1_3.jpg'],
+        ['grupo2/d2_1.jpg', 'grupo2/d2_2.jpg', 'grupo2/d2_3.jpg'],
+        ['grupo3/d3_1.jpg', 'grupo3/d3_2.jpg', 'grupo3/d3_3.jpg'],
+        ['grupo4/d4_1.jpg', 'grupo4/d4_2.jpg', 'grupo4/d4_3.jpg'],
+        ['grupo5/d5_1.jpg', 'grupo5/d5_2.jpg', 'grupo5/d5_3.jpg']
+      ];
+      // Selecciona un grupo de imágenes aleatorio
+      const randomIndex = Math.floor(Math.random() * imageGroups.length);
+      return imageGroups[randomIndex];
+    }
 
   }
 };
@@ -233,5 +265,8 @@ export default {
 .error-text {
   color: red;
   margin: 8px 0;
+}
+.clickable-image {
+  cursor: pointer;
 }
 </style>
