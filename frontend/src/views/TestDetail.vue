@@ -16,7 +16,7 @@
             contain
             class="rounded-lg mb-3"
         ></v-img>
-        <v-row justify="center" class="image-group">
+        <v-row justify="center" class="image-group" v-if="test.id === 10">
           <v-col
               v-for="(image, index) in selectedImages"
               :key="index"
@@ -33,8 +33,30 @@
           ></v-img>
           </v-col>
         </v-row>
+        <div v-if="test.id === 4" class="letter-inputs">
+          <v-row>
+            <v-col
+                v-for="i in 11"
+                :key="`letter-${i}`"
+                cols="3"
+            >
+            <v-text-field
+                v-model="letters[i - 1]"
+                :label="`${i}`"
+                maxlength="1"
+                class="letter-field"
+            ></v-text-field>
+            </v-col>
+          </v-row>
+        </div>
+
+        <v-btn @click="verifyCodeForTest4" color="primary">
+          Verificar Código
+        </v-btn>
+        <p v-if="codeError" class="error-text">Código incorrecto. Inténtalo de nuevo.</p>
         <!-- Campo para ingresar el primer código -->
         <v-text-field
+            v-if="test.id !== 4"
             v-model="inputCode1"
             label="Introduce el primer código"
             :disabled="code1Verified"
@@ -43,9 +65,9 @@
         ></v-text-field>
 
         <v-btn
+            v-if="test.id !== 4 && !code1Verified"
             @click="verifyCode1"
             color="primary"
-            v-if="!code1Verified"
             class="mb-2"
         >
           Verificar Primer Código
@@ -55,7 +77,7 @@
 
         <!-- Campo para ingresar el segundo código -->
         <v-text-field
-            v-if="test.id === 3 && code1Verified"
+            v-if="test.id !== 4 && test.id === 3 && code1Verified"
             v-model="inputCode2"
             label="Introduce el segundo código"
             :disabled="code2Verified"
@@ -64,7 +86,7 @@
         ></v-text-field>
 
         <v-btn
-            v-if="test.id === 3 && code1Verified && !code2Verified"
+            v-if="test.id !== 4 && test.id === 3 && code1Verified && !code2Verified"
             @click="verifyCode2"
             color="primary"
             class="mb-2"
@@ -121,6 +143,10 @@ export default {
       selectedImages: [],
       selectedImage: null,
       dialog: false,
+      letters: Array(11).fill(""),
+      codeError: false,
+      correctCode: "1C, 2R, 3K, 4D, 5L, 6Z, 7H, 8M, 9W, 10N, 11S",
+      codeVerified: false
     };
   },
   async created() {
@@ -134,9 +160,15 @@ export default {
   },
   computed: {
     isAudioUnlocked() {
-      return this.test.id === 3
-          ? this.code1Verified && this.code2Verified
-          : this.code1Verified;
+      console.log("audio")
+      if (this.test.id === 4) {
+        console.log("4")
+        return this.codeVerified;
+      } else if (this.test.id === 3) {
+        return this.code1Verified && this.code2Verified;
+      } else {
+        return this.code1Verified;
+      }
     }
   },
   methods: {
@@ -145,7 +177,13 @@ export default {
       this.dialog = true;
     },
     verifyCode1() {
-      if (this.inputCode1 === this.test.code1) {
+      const normalizeText = (text) =>
+          text
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "");
+
+      if (normalizeText(this.inputCode1) === normalizeText(this.test.code1)) {
         this.code1Verified = true;
         this.code1Error = false;
         this.updateAudioSource();
@@ -154,12 +192,34 @@ export default {
       }
     },
     verifyCode2() {
-      if (this.inputCode2 === this.test.code2) {
+      const normalizeText = (text) =>
+          text
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "");
+      if (normalizeText(this.inputCode2) === normalizeText(this.test.code2)) {
         this.code2Verified = true;
         this.code2Error = false;
         this.updateAudioSource();
       } else {
         this.code2Error = true;
+      }
+    },
+    verifyCodeForTest4() {
+      const userCode = this.letters
+          .map((letter, index) => `${index + 1}${letter.toUpperCase()}`)
+          .join(", ");
+      console.log("codigo introducido: " + userCode)
+      console.log("codigo correcto: " + this.test.code1)
+      if (userCode === this.test.code1) {
+        console.log("codigo introducido correcto")
+        // Código correcto, continúa con la prueba
+        this.codeError = false;
+        this.codeVerified = true;
+        this.updateAudioSource();
+      } else {
+        // Código incorrecto
+        this.codeError = true;
       }
     },
     updateAudioSource() {
