@@ -50,7 +50,7 @@
           </v-row>
         </div>
 
-        <v-btn @click="verifyCodeForTest4" color="primary">
+        <v-btn v-if="test.id === 4" @click="verifyCodeForTest4" color="primary">
           Verificar Código
         </v-btn>
         <p v-if="codeError" class="error-text">Código incorrecto. Inténtalo de nuevo.</p>
@@ -74,7 +74,15 @@
         </v-btn>
 
         <p v-if="code1Error" class="error-text">Código incorrecto. Inténtalo de nuevo.</p>
-
+        <p v-if="test.id === 3 && code1Verified">Reúnete con tus compañeros. NO OLVIDES LA LLAVE.</p>
+        <v-img
+            v-if="test.id === 3 && code1Verified"
+            :src="require(`@/assets/imagenesMapas/mapa3_2.png`)"
+            width="480px"
+            height="270px"
+            contain
+            class="rounded-lg mb-3"
+        ></v-img>
         <!-- Campo para ingresar el segundo código -->
         <v-text-field
             v-if="test.id !== 4 && test.id === 3 && code1Verified"
