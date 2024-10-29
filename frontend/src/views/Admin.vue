@@ -36,47 +36,11 @@ export default {
     };
   },
   async mounted() {
-    // Crear los usuarios directamente en localStorage
-    //this.crearUsuariosIniciales();
     this.users = await getData("usuarios")
     this.users = this.users.filter(user => user.userLogin !== 'admin');
-    console.log(this.users)
-    // Cargar los usuarios de localStorage para mostrarlos en la tabla
-    //this.loadUsuarios();
+
   },
   methods: {
-    // Crear usuarios iniciales en localStorage
-
-    crearUsuariosIniciales() {
-      // Verificar si ya existen usuarios en localStorage para evitar sobrescribir
-
-      const usuariosLocalStorage = localStorage.getItem('usuarios');
-      if (!usuariosLocalStorage) {
-        const usuariosIniciales = [
-          { id: 1, userLogin: 'admin', contadorPruebas: 0, assignedTest: null, completedTests: [],  unlockedAudios: []},
-          { id: 2, userLogin: 'user1', contadorPruebas: 0, assignedTest: "ILUSIONISMO", completedTests: [], unlockedAudios: [] },
-          { id: 3, userLogin: 'user2', contadorPruebas: 0, assignedTest: "ESCAPISMO", completedTests: [], unlockedAudios: [] },
-          { id: 4, userLogin: 'user3', contadorPruebas: 0, assignedTest: "HOMBRE BALA", completedTests: [], unlockedAudios: [] }
-        ];
-        // Guardar los usuarios iniciales en localStorage
-        localStorage.setItem('usuarios', JSON.stringify(usuariosIniciales));
-      }
-    },
-    // Cargar usuarios desde localStorage
-    loadUsuarios() {
-      const usuariosLocalStorage = localStorage.getItem('usuarios');
-      if (usuariosLocalStorage) {
-        // Filtrar para excluir al usuario 'admin'
-        const allUsers = JSON.parse(usuariosLocalStorage);
-        this.usuarios = allUsers.filter(user => user.userLogin !== 'admin');
-      } else {
-        this.usuarios = [];
-      }
-    },
-    // Guardar los usuarios en localStorage
-    saveUsuarios() {
-      localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
-    },
   }
 };
 </script>

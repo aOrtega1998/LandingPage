@@ -72,11 +72,10 @@ export default {
   async mounted() {
     this.tests = await getData("pruebas")
     this.users = await getData("usuarios")
-    console.log(this.tests)
     const sessionActive = localStorage.getItem('sessionActive');
     if (sessionActive) {
       // Lógica para cargar la información del usuario y redirigirlo
-      this.loadUser();
+      await this.loadUser();
       this.assignTestToUser();
     } else {
       await this.$router.push('/'); // Redirige al usuario a la página de login
@@ -103,7 +102,6 @@ export default {
               !occupiedTests.includes(test.name) &&
               !this.currentUser.completedTests.includes(test.name)
           );
-          console.log(this.currentTest)
           // Si hay una prueba disponible, asignarla al usuario
           if (this.currentTest) {
             this.currentUser.assignedTest = this.currentTest.name;
@@ -113,13 +111,11 @@ export default {
       }
     },
     getOccupiedTests() {
-     // const users = JSON.parse(localStorage.getItem('usuarios'));
       return this.users
           .filter(user => user.userLogin !== this.currentUser.userLogin && user.assignedTest)
           .map(user => user.assignedTest);
     },
    async updateUserInStorage(user) {
-      //const updatedUsers = this.users.map(u => (u.userLogin === user.userLogin ? user : u));
       await updateData("usuarios",user.id,user)
       localStorage.setItem('usuarios', JSON.stringify(updatedUsers));
     },

@@ -50,7 +50,7 @@
           </v-row>
         </div>
 
-        <v-btn v-if="test.id === 4" @click="verifyCodeForTest4" color="primary">
+        <v-btn v-if="test.id === 4 && !codeVerified" @click="verifyCodeForTest4" color="primary">
           Verificar Código
         </v-btn>
         <p v-if="codeError" class="error-text">Código incorrecto. Inténtalo de nuevo.</p>
@@ -70,7 +70,7 @@
             color="primary"
             class="mb-2"
         >
-          Verificar Primer Código
+          Verificar Código
         </v-btn>
 
         <p v-if="code1Error" class="error-text">Código incorrecto. Inténtalo de nuevo.</p>
@@ -99,7 +99,7 @@
             color="primary"
             class="mb-2"
         >
-          Verificar Segundo Código
+          Verificar Código
         </v-btn>
 
         <p v-if="code2Error" class="error-text">Segundo código incorrecto. Inténtalo de nuevo.</p>
@@ -153,7 +153,6 @@ export default {
       dialog: false,
       letters: Array(11).fill(""),
       codeError: false,
-      correctCode: "1C, 2R, 3K, 4D, 5L, 6Z, 7H, 8M, 9W, 10N, 11S",
       codeVerified: false
     };
   },
@@ -168,9 +167,7 @@ export default {
   },
   computed: {
     isAudioUnlocked() {
-      console.log("audio")
       if (this.test.id === 4) {
-        console.log("4")
         return this.codeVerified;
       } else if (this.test.id === 3) {
         return this.code1Verified && this.code2Verified;
@@ -195,6 +192,12 @@ export default {
         this.code1Verified = true;
         this.code1Error = false;
         this.updateAudioSource();
+        if(this.test.id === 3){
+          const currentUser = localStorage.getItem('username');
+          const user = this.users.find(u => u.userLogin === currentUser);
+          user.assignedTest = "HOMBRE BALA 2"
+          updateData("usuarios",user.id,user)
+        }
       } else {
         this.code1Error = true;
       }
@@ -217,10 +220,7 @@ export default {
       const userCode = this.letters
           .map((letter, index) => `${index + 1}${letter.toUpperCase()}`)
           .join(", ");
-      console.log("codigo introducido: " + userCode)
-      console.log("codigo correcto: " + this.test.code1)
       if (userCode === this.test.code1) {
-        console.log("codigo introducido correcto")
         // Código correcto, continúa con la prueba
         this.codeError = false;
         this.codeVerified = true;
@@ -245,14 +245,13 @@ export default {
           // Si no hay audios desbloqueados, usar el audio con ID 1
           audio = this.audios.find(a => a.id === 1);
         } else {
-          // Obtener el siguiente audio según el contador de pruebas completadas
-          const completedCount = user.contadorPruebas;
-          audio = this.audios[completedCount - 1];
+          // Obtener el último audio desbloqueado y buscar el siguiente
+          const lastUnlockedAudioId = user.unlockedAudios[user.unlockedAudios.length - 1].id;
+          audio = this.audios.find(a => a.id === lastUnlockedAudioId + 1);
         }
 
         if (audio) {
           this.audioSrc = require(`@/assets/audios/${audio.url}`);
-          console.log("Audio seleccionado:", audio);
         } else {
           console.error("No se encontró el audio correspondiente.");
         }
@@ -290,11 +289,7 @@ export default {
         } else {
           user.assignedTest = null; // Asegurarse de que no haya una prueba asignada
         }
-        console.log(user)
         await updateData("usuarios",user.id,user)
-        console.log(user)
-        // Actualizar el usuario en localStorage
-        //localStorage.setItem('usuarios', JSON.stringify(users));
 
         // Volver a la vista de inicio
         await this.$router.push('/inicio');
@@ -302,14 +297,19 @@ export default {
     },
     unlockAudioForTest(user) {
 
-      // Agrega más audios según sea necesario
-      const completedCount = user.contadorPruebas; // Este es el número de pruebas completadas
-      console.log(completedCount)
-      if (this.audios[completedCount - 1]) { // Asegúrate de que el índice sea válido
-        const audio = this.audios[completedCount - 1]; // Obtener el siguiente audio
-        console.log(audio)
-        if (!user.unlockedAudios.some(unlocked => unlocked.id === audio.id)) { // Verificar si ya está desbloqueado
-          user.unlockedAudios.push(audio); // Agregar solo si no está desbloqueado
+      if (!user.unlockedAudios || user.unlockedAudios.length === 0) {
+        // Si no hay audios desbloqueados, empieza con el audio de id 1
+        const firstAudio = this.audios.find(a => a.id === 1);
+        if (firstAudio) {
+          user.unlockedAudios.push(firstAudio);
+        }
+      } else {
+        // Obtener el último audio desbloqueado y buscar el siguiente en la secuencia
+        const lastUnlockedAudioId = user.unlockedAudios[user.unlockedAudios.length - 1].id;
+        const nextAudio = this.audios.find(a => a.id === lastUnlockedAudioId + 1);
+
+        if (nextAudio && !user.unlockedAudios.some(unlocked => unlocked.id === nextAudio.id)) {
+          user.unlockedAudios.push(nextAudio); // Desbloquea solo si aún no lo tiene
         }
       }
     },
