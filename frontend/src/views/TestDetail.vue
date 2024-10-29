@@ -58,7 +58,7 @@
         <v-text-field
             v-if="test.id !== 4"
             v-model="inputCode1"
-            label="Introduce el primer código"
+            label="Introduce el código"
             :disabled="code1Verified"
             required
             clearable
@@ -87,7 +87,7 @@
         <v-text-field
             v-if="test.id !== 4 && test.id === 3 && code1Verified"
             v-model="inputCode2"
-            label="Introduce el segundo código"
+            label="Introduce el código"
             :disabled="code2Verified"
             required
             clearable
