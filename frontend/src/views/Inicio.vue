@@ -2,16 +2,15 @@
   <v-container >
     <v-row class="d-flex align-center justify-center">
       <v-col v-if="allTestsCompleted" cols="12">
-        <v-alert type="success" dismissible>
-          <v-icon left>mdi-trophy</v-icon>
-          ¿Has descubierto quien es el malo de esta historia? Ves a la adivina a contarselo.
-        </v-alert>
-      </v-col>
-      <v-col v-if="noAvailableTests" cols="12">
-        <v-alert type="warning" dismissible>
-          <v-icon left>mdi-alert-circle</v-icon>
-          No hay pruebas disponibles en este momento. ¡Por favor, inténtalo más tarde recargando la página!
-        </v-alert>
+        <v-sheet color="green lighten-3" rounded elevation="8" class="pa-4 text-center">
+          <v-icon color="yellow lighten-2" size="60" class="mb-3" style="animation: bounce 1s infinite;">mdi-trophy</v-icon>
+          <div class="text-h5 font-weight-bold mb-2">
+            ¿Has descubierto quién es el villano?
+          </div>
+          <div class="text-subtitle-1">
+            ¡Ve a la adivina y cuéntale tu hallazgo!
+          </div>
+        </v-sheet>
       </v-col>
       <v-col v-if="currentTest" cols="12" md="4">
         <test-card :test="currentTest" />
