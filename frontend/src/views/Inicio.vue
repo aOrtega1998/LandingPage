@@ -4,13 +4,13 @@
       <v-col v-if="allTestsCompleted" cols="12">
         <v-alert type="success" dismissible>
           <v-icon left>mdi-trophy</v-icon>
-          ¡Has completado todas las pruebas! ¡Felicidades!
+          ¡Has completado todas las pruebas! ¡Felicidades! Dirigete a la adivina.
         </v-alert>
       </v-col>
       <v-col v-if="noAvailableTests" cols="12">
         <v-alert type="warning" dismissible>
           <v-icon left>mdi-alert-circle</v-icon>
-          No hay pruebas disponibles en este momento. ¡Por favor, inténtalo más tarde!
+          No hay pruebas disponibles en este momento. ¡Por favor, inténtalo más tarde recargando la páginaa!
         </v-alert>
       </v-col>
       <v-col v-if="currentTest" cols="12" md="4">
