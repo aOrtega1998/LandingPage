@@ -12,6 +12,12 @@
           </div>
         </v-sheet>
       </v-col>
+      <v-col v-if="noAvailableTests" cols="12">
+        <v-alert type="warning" dismissible>
+          <v-icon left>mdi-alert-circle</v-icon>
+          No hay pruebas disponibles en este momento. ¡Por favor, inténtalo más tarde recargando la página!
+        </v-alert>
+      </v-col>
       <v-col v-if="currentTest" cols="12" md="4">
         <test-card :test="currentTest" />
       </v-col>
